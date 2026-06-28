@@ -49,6 +49,26 @@ namespace UnitBrains.Player
                 result.RemoveAt(result.Count - 1);
             }
             return result;
+
+            Vector2Int closesTarget = result[0];
+            float closesDistant = DistanceToOwnBase(closesTarget);
+
+            for (int i = 0; i < result.Count; i++)
+            {
+                Vector2Int target = result[i];
+                float distant = DistanceToOwnBase(target);
+
+                if (distant < closesDistant)
+                {
+                    closesDistant = distant;
+                    closesTarget = target;
+                }
+            }
+
+            result.Clear();
+            result.Add(closesTarget);
+
+            return result;
             ///////////////////////////////////////
         }
 
