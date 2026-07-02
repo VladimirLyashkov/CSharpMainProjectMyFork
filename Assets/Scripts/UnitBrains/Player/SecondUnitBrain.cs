@@ -44,11 +44,8 @@ namespace UnitBrains.Player
             // Homework 1.4 (1st block, 4rd module)
             ///////////////////////////////////////
             List<Vector2Int> result = GetReachableTargets();
-            while (result.Count > 1)
-            {
-                result.RemoveAt(result.Count - 1);
-            }
-            return result;
+            if (result.Count == 0)
+                return result;
 
             Vector2Int closesTarget = result[0];
             float closesDistant = DistanceToOwnBase(closesTarget);
