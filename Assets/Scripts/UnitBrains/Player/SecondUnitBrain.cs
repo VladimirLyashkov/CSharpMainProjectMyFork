@@ -18,6 +18,16 @@ namespace UnitBrains.Player
 
         private Vector2Int _targetToChase = new Vector2Int(-1, -1);
 
+        private static int _unitCounter = 0;    // Счётчик для нумерации юнитов
+        private int _unitNumber;                // Номер текущего  юнита
+        private const int MaxTargets = 3;       // Максимум целей для умного выбора
+
+        // При инициализации присваеваем номер и увеличиваем счётчик
+        private void Awake()
+        {
+            _unitNumber = _unitCounter++;
+        }
+
         protected override void GenerateProjectiles(Vector2Int forTarget, List<BaseProjectile> intoList)
         {
             float overheatTemperature = OverheatTemperature;
@@ -53,8 +63,7 @@ namespace UnitBrains.Player
                 return currentPos;
             }
             
-            Vector2Int nestStep = currentPos.CalcNextStepTowards(_targetToChase);
-            return nestStep;
+            return currentPos.CalcNextStepTowards(_targetToChase);
         }
 
         protected override List<Vector2Int> SelectTargets()
@@ -71,17 +80,14 @@ namespace UnitBrains.Player
                 allTargets.Add(enemyBasePos);
             }
 
-            Vector2Int choseTarget = allTargets[0];
-            float minDistToOwnBase = DistanceToOwnBase(choseTarget);
-            foreach (Vector2Int target in allTargets)
-            {
-                float dist = DistanceToOwnBase(target);
-                if (dist < minDistToOwnBase)
-                {
-                    minDistToOwnBase = dist;
-                    choseTarget = target;
-                } 
-            }
+            SortByDistanceToOwnBase(allTargets);
+
+            int targetCount = allTargets.Count;
+            int targetIndex = _unitNumber % MaxTargets;
+            if (targetIndex >= targetCount)
+                targetIndex = targetIndex % targetCount;
+
+            Vector2Int choseTarget = allTargets[targetIndex];
 
             bool inAttackRange = IsTargetInRange(choseTarget);
 
