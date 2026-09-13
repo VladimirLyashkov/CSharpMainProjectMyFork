@@ -23,7 +23,7 @@ namespace UnitBrains.Player
         private const int MaxTargets = 3;       // Максимум целей для умного выбора
 
         // При инициализации присваеваем номер и увеличиваем счётчик
-        private void Awake()
+        public SecondUnitBrain()
         {
             _unitNumber = _unitCounter++;
         }
@@ -50,20 +50,7 @@ namespace UnitBrains.Player
 
         public override Vector2Int GetNextStep()
         {
-            Vector2Int currentPos = unit.Pos;
-
-            if (_targetToChase.x == -1 && _targetToChase.y == -1)
-            {
-                return currentPos;
-            }
-
-            if (IsTargetInRange(_targetToChase))
-            {
-                _targetToChase = new Vector2Int(-1, -1);
-                return currentPos;
-            }
-            
-            return currentPos.CalcNextStepTowards(_targetToChase);
+            return base.GetNextStep();
         }
 
         protected override List<Vector2Int> SelectTargets()
