@@ -15,19 +15,7 @@ namespace UnitBrains.Player
         private float _temperature = 0f;
         private float _cooldownTime = 0f;
         private bool _overheated;
-
-        private Vector2Int _targetToChase = new Vector2Int(-1, -1);
-
-        private static int _unitCounter = 0;    // Счётчик для нумерации юнитов
-        private int _unitNumber;                // Номер текущего  юнита
-        private const int MaxTargets = 3;       // Максимум целей для умного выбора
-
-        // При инициализации присваеваем номер и увеличиваем счётчик
-        public SecondUnitBrain()
-        {
-            _unitNumber = _unitCounter++;
-        }
-
+                
         protected override void GenerateProjectiles(Vector2Int forTarget, List<BaseProjectile> intoList)
         {
             float overheatTemperature = OverheatTemperature;
@@ -47,53 +35,7 @@ namespace UnitBrains.Player
             IncreaseTemperature();
             ///////////////////////////////////////
         }
-
-        public override Vector2Int GetNextStep()
-        {
-            return base.GetNextStep();
-        }
-
-        protected override List<Vector2Int> SelectTargets()
-        {
-            ///////////////////////////////////////
-            // Homework 1.4 (1st block, 4rd module)
-            ///////////////////////////////////////
-            List<Vector2Int> allTargets = GetAllTargets().ToList();
-
-            if (allTargets.Count == 0)
-            {
-                int enemyBaseId = IsPlayerUnitBrain ? RuntimeModel.BotPlayerId : RuntimeModel.PlayerId;
-                Vector2Int enemyBasePos = runtimeModel.RoMap.Bases[enemyBaseId];
-                allTargets.Add(enemyBasePos);
-            }
-
-            SortByDistanceToOwnBase(allTargets);
-
-            int targetCount = allTargets.Count;
-            int targetIndex = _unitNumber % MaxTargets;
-            if (targetIndex >= targetCount)
-                targetIndex = targetIndex % targetCount;
-
-            Vector2Int choseTarget = allTargets[targetIndex];
-
-            bool inAttackRange = IsTargetInRange(choseTarget);
-
-            List<Vector2Int> result = new List<Vector2Int>();
-
-            if (inAttackRange)
-            {
-                result.Add(choseTarget);
-                _targetToChase = new Vector2Int(-1, -1);
-            }
-            else
-            {
-                _targetToChase = choseTarget;
-            }
-
-            return result;
-            ///////////////////////////////////////
-        }
-
+                
         public override void Update(float deltaTime, float time)
         {
             if (_overheated)

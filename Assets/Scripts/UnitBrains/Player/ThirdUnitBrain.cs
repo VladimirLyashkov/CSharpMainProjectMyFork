@@ -18,7 +18,7 @@ public class ThirdUnitBrain : DefaultPlayerUnitBrain
 
     private Mode _currentMode = Mode.Moving;   // Текущий режим
     private float _switchTimer = 0f;           // Таймер переключения
-    private const float SwitchDuration = 1f;   // Длительность переключения (1 секунда)
+    private const float SwitchDuration = 0.5f;   // Длительность переключения (1 секунда)
 
     // Вызывается каждый кадр для обновления состояния
     public override void Update(float deltaTime, float time)
@@ -53,16 +53,14 @@ public class ThirdUnitBrain : DefaultPlayerUnitBrain
         }
     }
 
-    // Проверяет наличие цели в радиусе атаки
+    // проверяем рекомендованную цель координатора
     private bool CheckTargetInAttackRange()
     {
-        var allTargets = GetAllTargets();
-        foreach (var target in allTargets)
-        {
-            if (IsTargetInRange(target))
-                return true;
-        }
-        return false;
+        var coord = PlayerUnitCoordinator.Instance;
+        if (!coord.RecommendedTarget.HasValue)
+            return false;
+
+        return IsTargetInRange(coord.RecommendedTarget.Value);
     }
 
     // Определяет следующий шаг движения
